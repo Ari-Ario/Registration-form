@@ -9,19 +9,21 @@ win.geometry("350x300")
 def database():
     first = entry_firstname.get()
     second= entry_lastname.get()
-    dob = entry_birthday.get()
-    var_con = var.get()
-    var1= var_c1 if c1==True else ""
-    var2= var_c2 if c2==True else ""
-    var3= var_c3 if c3==True else ""
-    var4 = radio_var.get()
-    #conn= sqlite3.connect("Form.db")
-    line =f"{first},{second},{dob},{var_con},{var1},{var2},{var3},{var4}\n"
-    with open("sth.txt", mode="a", encoding="utf-8") as file:
-        file.write(line)
+    if first and second:
+        dob = entry_birthday.get()
+        var_con = var.get()
+        var1= var_c1 if c1==True else ""
+        var2= var_c2 if c2==True else ""
+        var3= var_c3 if c3==True else ""
+        var4 = radio_var.get()
+        #conn= sqlite3.connect("Form.db")
+        line =f"{first},{second},{dob},{var_con},{var1},{var2},{var3},{var4}\n"
+        with open("sth.txt", mode="a", encoding="utf-8") as file:
+            file.write(line)
 
-    messagebox.showinfo("Congratulation", "You have registered successfully")
-
+        messagebox.showinfo("Congratulation", "You have registered successfully")
+    else:
+        messagebox.showerror("Name Error", "First- and Second-name are required")
 
 firstname= StringVar()
 lastname= StringVar()

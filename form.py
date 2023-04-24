@@ -1,6 +1,8 @@
 from tkinter import *
 import sqlite3
-from tkinter import messagebox
+from tkinter import messagebox, ttk
+import os
+import openpyxl
 
 win= Tk()
 win.title("FORM")
@@ -13,31 +15,51 @@ def database():
     if first and second:
         dob = entry_birthday.get()
         var_con = var.get()
-        var1= var_c1 if c1==True else ""
-        var2= var_c2 if c2==True else ""
-        var3= var_c3 if c3==True else ""
+        #these variables needs verification
+        var1= var_c1 if "selected" in c1.state() else ""
+        var2= var_c2 if "selected" in c2.state() else ""
+        var3= var_c3 if "selected" in c3.state() else ""
         var4 = radio_var.get()
-        #conn= sqlite3.connect("Form.db")
+
+        #this line is a string for text data as backup
         line =f"{first},{second},{dob},{var_con},{var1},{var2},{var3},{var4}\n"
-        with open("sth.txt", mode="a", encoding="utf-8") as file:
+        #opening the backup data, or creating it, in case it does not exist
+        with open("form.txt", mode="a", encoding="utf-8") as file:
             file.write(line)
+
+        #opening/creating an exel file in the same directory
+        form_exel = "form.xlsx"
+
+        if not os.path.exists(form_exel):
+            workbook = openpyxl.Workbook()
+            sheet = workbook.active
+            heading = ["First Name", "Last Name", "Birthday", "country", "languages", "Gender"]
+            sheet.append(heading)
+            workbook.save(form_exel)
+
+        language_vars= f"{var1}, {var2}, {var3}"
+        workbook = openpyxl.load_workbook(form_exel)
+        sheet = workbook.active
+        sheet.append([first, second, dob, var_con, language_vars, var4])
+        workbook.save(form_exel)
 
         messagebox.showinfo("Congratulation", "You have registered successfully")
     else:
         messagebox.showerror("Name Error", "First- and Second-name are required")
+
 #variables
 firstname= StringVar()
 lastname= StringVar()
 birthday= StringVar()
 var= StringVar()
-var_c1 = "English"
-var_c2= "Kurdish"
+var_c1 = "C"
+var_c2= "SQL"
 var_c3= "Other"
 radio_var= StringVar()
 
 label_heading = Label(win, text="REGISTRATION FORM", font="Currier", relief=SOLID).place(x=75, y=15)
 
-#all labels, entries etc
+#all labels, entries and etc.
 label_firstname = Label(win, text="First Name:").place(x=50, y =50)
 entry_firstname = Entry(win, width=16, textvariable=firstname)
 entry_firstname.place(x=150, y=50)
@@ -94,9 +116,12 @@ option_country.place(x=150, y=140, width=135)
 var.set("Select Country")
 
 label_language = Label(win, text="Language:").place(x=50, y =180)
-c1 = Checkbutton(win, text="C", variable=var_c1).place(x=140, y=180)
-c2=  Checkbutton(win, text="SQL", variable=var_c2).place(x=190, y=180)
-c3= Checkbutton(win, text="OTHER", variable=var_c3).place(x=250, y=180)
+c1 = ttk.Checkbutton(win, text="C", variable=var_c1)
+c1.place(x=140, y=180)
+c2=  ttk.Checkbutton(win, text="SQL", variable=var_c2)
+c2.place(x=190, y=180)
+c3= ttk.Checkbutton(win, text="OTHER", variable=var_c3)
+c3.place(x=250, y=180)
 
 
 gender = Label(win, text="Gender").place(x=50, y=220)

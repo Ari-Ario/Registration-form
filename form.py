@@ -6,6 +6,7 @@ win= Tk()
 win.title("FORM")
 win.geometry("350x300")
 
+#database function
 def database():
     first = entry_firstname.get()
     second= entry_lastname.get()
@@ -24,7 +25,7 @@ def database():
         messagebox.showinfo("Congratulation", "You have registered successfully")
     else:
         messagebox.showerror("Name Error", "First- and Second-name are required")
-
+#variables
 firstname= StringVar()
 lastname= StringVar()
 birthday= StringVar()
@@ -36,6 +37,7 @@ radio_var= StringVar()
 
 label_heading = Label(win, text="REGISTRATION FORM", font="Currier", relief=SOLID).place(x=75, y=15)
 
+#all labels, entries etc
 label_firstname = Label(win, text="First Name:").place(x=50, y =50)
 entry_firstname = Entry(win, width=16, textvariable=firstname)
 entry_firstname.place(x=150, y=50)
@@ -48,6 +50,7 @@ label_birthday = Label(win, text="Birthday:").place(x=50, y =110)
 entry_birthday = Entry(win, width=16, textvariable=birthday)
 entry_birthday.place(x=150, y=110)
 
+#list of countries
 countries = ['Abkhazia', 'Afghanistan', 'Akrotiri and Dhekelia', 'Albania', 'Algeria', 
              'American Samoa', 'Andorra', 'Angola', 'Anguilla', 'Antigua and Barbuda', 'Argentina', 
              'Armenia', 'Aruba', 'Ascension Island', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 

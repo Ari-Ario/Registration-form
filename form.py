@@ -1,5 +1,5 @@
 from tkinter import *
-import sqlite3
+import sqlite3 #is not used, just in case an sql file will be added
 from tkinter import messagebox, ttk
 import os
 import openpyxl

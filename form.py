@@ -15,7 +15,7 @@ def database():
     if first and second:
         dob = entry_birthday.get()
         var_con = var.get()
-        #these variables needs verification
+        #these variables need verification as clicked
         var1= var_c1 if "selected" in c1.state() else ""
         var2= var_c2 if "selected" in c2.state() else ""
         var3= var_c3 if "selected" in c3.state() else ""

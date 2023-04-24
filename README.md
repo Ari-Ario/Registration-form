@@ -5,4 +5,4 @@ pip install <module-name>
 
 modules: openpyxl
 
-to make the programm executable: pyinstaller
+to make the programm-code executable: pyinstaller

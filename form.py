@@ -5,7 +5,7 @@ import sqlite3 #is not used, just in case an sql file will be added
 from tkinter import messagebox, ttk
 import os
 import openpyxl
-import time
+from datetime import date
 
 win= Tk()
 win.title("FORM")
@@ -13,6 +13,7 @@ win.geometry("350x300")
 
 #database function
 def database():
+    global first, second, dob, var_con, language_vars, var4
     first = entry_firstname.get()
     second= entry_lastname.get()
     if first and second:
@@ -51,7 +52,7 @@ def database():
     else:
         messagebox.showerror("Name Error", "First- and Second-name are required")
 
-#function to show that data have been archived successfuly in .txt and exel. It asks for SQL-archive too.
+#popup window, if data has been added in .txt and exel. It asks for SQL-archive in case some important data.
 def success_entry():
     success_win= Tk()
     success_win.title("Congratulation")
@@ -65,15 +66,20 @@ def success_entry():
     butt_no_quit.pack(side=RIGHT)
 
 #extra method to collect the date in 
-def sql_data_insertion(firstname, lastname, birthday, country, language, gender):
+def sql_data_insertion():
+    global first, second, dob, var_con, language_vars, var4
+    today = date.today()
+    day, month, year= dob.split(".")
+    age = today.year - int(year) - ((today.month, today.day) < (int(month), int(day)))
+    print(age)
     con = sqlite3.connect("data.db")
     tabel_creat_query= '''CREATE TABLE IF NOT EXISTS Form_data(firstname TEXT, lastname TEXT, 
     birthday INT, country TEXT, language TEXT, gender TEXT)'''
     con.execute(tabel_creat_query)
     #insert data into the query
     data_insert_into_query= '''INSERT INTO Form_data(firstname, lastname, birthday, country, 
-    language, gender) VALUES(?, ?, ? ,? ?, ?)'''
-    data_insertion_tuple= (firstname, lastname, birthday, country, language, gender)
+    language, gender) VALUES(?, ?, ? ,? ,?, ?)'''
+    data_insertion_tuple= (firstname, lastname, age, var_con, language_vars, gender)
     cursor= con.cursor()
     cursor.execute(data_insert_into_query, data_insertion_tuple)
     con.commit()
@@ -83,7 +89,7 @@ def sql_data_insertion(firstname, lastname, birthday, country, language, gender)
 firstname= StringVar()
 lastname= StringVar()
 birthday= StringVar()
-var= StringVar()
+var= StringVar(win)
 var_c1 = "C"
 var_c2= "SQL"
 var_c3= "Other"
@@ -103,9 +109,11 @@ entry_lastname.place(x=150, y=80)
 label_birthday = Label(win, text="Birthday:").place(x=50, y =110)
 entry_birthday = Entry(win, width=16, textvariable=birthday)
 entry_birthday.place(x=150, y=110)
+entry_birthday.focus()
+entry_birthday.insert(0, "dd.mm.yy")
 
 #list of countries
-countries = ['Abkhazia', 'Afghanistan', 'Akrotiri and Dhekelia', 'Albania', 'Algeria', 
+countries = ('Abkhazia', 'Afghanistan', 'Akrotiri and Dhekelia', 'Albania', 'Algeria', 
              'American Samoa', 'Andorra', 'Angola', 'Anguilla', 'Antigua and Barbuda', 'Argentina', 
              'Armenia', 'Aruba', 'Ascension Island', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 
              'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bermuda', 
@@ -140,12 +148,14 @@ countries = ['Abkhazia', 'Afghanistan', 'Akrotiri and Dhekelia', 'Albania', 'Alg
              'Trinidad and Tobago', 'Tristan da Cunha', 'Tunisia', 'Turkey', 'Turkmenistan', 'Turks and Caicos Islands', 
              'Tuvalu', 'Uganda', 'Ukraine', 'United Arab Emirates', 'United Kingdom; England', 'United States', 
              'United States Virgin Islands', 'Uruguay', 'Uzbekistan', 'Vanuatu', 'Vatican City', 'Venezuela', 
-             'Vietnam', 'Wales', 'Wallis and Futuna', 'Western Sahara', 'Yemen', 'Zambia', 'Zimbabwe']
+             'Vietnam', 'Wales', 'Wallis and Futuna', 'Western Sahara', 'Yemen', 'Zambia', 'Zimbabwe')
 
 label_country = Label(win, text="country:").place(x=50, y =140)
-option_country = OptionMenu(win , var, *countries)
-option_country.place(x=150, y=140, width=135)
 var.set("Select Country")
+option_country = ttk.Combobox(win, value=countries, textvariable=var)
+option_country.current(0)
+option_country.place(x=150, y=140, width=135)
+
 
 label_language = Label(win, text="Language:").place(x=50, y =180)
 c1 = ttk.Checkbutton(win, text="C", variable=var_c1)

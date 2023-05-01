@@ -1,3 +1,5 @@
+"""A Simple form to save data by entering new registrations"""
+
 from tkinter import *
 import sqlite3 #is not used, just in case an sql file will be added
 from tkinter import messagebox, ttk
@@ -46,9 +48,21 @@ def database():
         messagebox.showinfo("Congratulation", "You have registered successfully")
     else:
         messagebox.showerror("Name Error", "First- and Second-name are required")
+
 #extra method to collect the date in 
-def sql_data():
-    pass
+def sql_data(firstname, lastname, birthday, country, language, gender):
+    con = sqlite3.connect("data.db")
+    tabel_creat_query= '''CREATE TABLE IF NOT EXISTS Form_data(firstname TEXT, lastname TEXT, 
+    birthday INT, country TEXT, language TEXT, gender TEXT)'''
+    con.execute(tabel_creat_query)
+    #insert data into the query
+    data_insert_into_query= '''INSERT INTO Form_data(firstname, lastname, birthday, country, 
+    language, gender) VALUES(?, ?, ? ,? ?, ?)'''
+    data_insertion_tuple= (firstname, lastname, birthday, country, language, gender)
+    cursor= con.cursor()
+    cursor.execute(data_insert_into_query, data_insertion_tuple)
+    con.commit()
+    con.close()
 
 #variables
 firstname= StringVar()

@@ -45,13 +45,27 @@ def database():
         sheet = workbook.active
         sheet.append([first, second, dob, var_con, language_vars, var4])
         workbook.save(form_exel)
+        #give to the function success_entry as a new window
+        success_entry()
 
-        messagebox.showinfo("Congratulation", "You have registered successfully")
     else:
         messagebox.showerror("Name Error", "First- and Second-name are required")
 
+#function to show that data have been archived successfuly in .txt and exel. It asks for SQL-archive too.
+def success_entry():
+    success_win= Tk()
+    success_win.title("Congratulation")
+    success_frame= LabelFrame(success_win, text="You have registered successfully")
+    success_frame.pack()
+    label_success= Label(success_frame, text="Do you want data to SQL-query as second backup?", font="bold")
+    label_success.pack()
+    butt_success= Button(success_frame, text="Yes, sure!", command=sql_data_insertion, bg="green")
+    butt_success.pack(side=LEFT)
+    butt_no_quit= Button(success_frame, text="No, Quit", command=success_win.destroy, bg="red")
+    butt_no_quit.pack(side=RIGHT)
+
 #extra method to collect the date in 
-def sql_data(firstname, lastname, birthday, country, language, gender):
+def sql_data_insertion(firstname, lastname, birthday, country, language, gender):
     con = sqlite3.connect("data.db")
     tabel_creat_query= '''CREATE TABLE IF NOT EXISTS Form_data(firstname TEXT, lastname TEXT, 
     birthday INT, country TEXT, language TEXT, gender TEXT)'''

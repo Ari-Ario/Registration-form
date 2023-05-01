@@ -46,6 +46,9 @@ def database():
         messagebox.showinfo("Congratulation", "You have registered successfully")
     else:
         messagebox.showerror("Name Error", "First- and Second-name are required")
+#extra method to collect the date in 
+def sql_data():
+    pass
 
 #variables
 firstname= StringVar()

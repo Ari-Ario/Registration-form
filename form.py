@@ -35,6 +35,7 @@ def database():
             file.write(str(heading)+"\n")
         file = open(form_text, mode="a", encoding="utf-8")
         file.write(line)
+        file.close()
 
         #opening/creating an exel file in the same directory
         form_exel = "form.xlsx"

@@ -1,4 +1,4 @@
-"""A Simple form to save data by entering new registrations"""
+"""A Simple form to save data by entering new registrations; functional programming"""
 
 from tkinter import *
 import sqlite3 #is not used, just in case an sql file will be added
@@ -18,18 +18,23 @@ def database():
     second= entry_lastname.get()
     if first and second:
         dob = entry_birthday.get()
-        var_con = var.get()
+        var_con = var_coun.get()
         #these variables need verification as clicked
         var1= var_c1 if "selected" in c1.state() else ""
         var2= var_c2 if "selected" in c2.state() else ""
         var3= var_c3 if "selected" in c3.state() else ""
-        var4 = radio_var.get()
+        var4 = radio_var_gender.get()
 
         #this line is a string for text data as backup
-        line =f"{first},{second},{dob},{var_con},{var1},{var2},{var3},{var4}\n"
+        heading = ["First Name", "Last Name", "Birthday", "country", "languages", "Gender"]
+        line =f"[{first},{second},{dob},{var_con},{var1},{var2},{var3},{var4}]\n"
         #opening the backup data, or creating it, in case it does not exist
-        with open("form.txt", mode="a", encoding="utf-8") as file:
-            file.write(line)
+        form_text= "form.txt"
+        if not os.path.exists(form_text):
+            file= open(form_text, mode="w", encoding="utf-8")
+            file.write(str(heading)+"\n")
+        file = open(form_text, mode="a", encoding="utf-8")
+        file.write(line)
 
         #opening/creating an exel file in the same directory
         form_exel = "form.xlsx"
@@ -37,7 +42,6 @@ def database():
         if not os.path.exists(form_exel):
             workbook = openpyxl.Workbook()
             sheet = workbook.active
-            heading = ["First Name", "Last Name", "Birthday", "country", "languages", "Gender"]
             sheet.append(heading)
             workbook.save(form_exel)
 
@@ -47,13 +51,13 @@ def database():
         sheet.append([first, second, dob, var_con, language_vars, var4])
         workbook.save(form_exel)
         #give to the function success_entry as a new window
-        success_entry()
+        success_entry_win()
 
     else:
         messagebox.showerror("Name Error", "First- and Second-name are required")
 
 #popup window, if data has been added in .txt and exel. It asks for SQL-archive in case some important data.
-def success_entry():
+def success_entry_win():
     success_win= Tk()
     success_win.title("Congratulation")
     success_frame= LabelFrame(success_win, text="You have registered successfully")
@@ -62,7 +66,7 @@ def success_entry():
     label_success.pack()
     butt_success= Button(success_frame, text="Yes, sure!", command=sql_data_insertion, bg="green")
     butt_success.pack(side=LEFT)
-    butt_no_quit= Button(success_frame, text="No, Quit", command=success_win.destroy, bg="red")
+    butt_no_quit= Button(success_frame, text="No, Quit", command=success_win.destroy , bg="red")
     butt_no_quit.pack(side=RIGHT)
 
 #extra method to collect the date in 
@@ -71,29 +75,29 @@ def sql_data_insertion():
     today = date.today()
     day, month, year= dob.split(".")
     age = today.year - int(year) - ((today.month, today.day) < (int(month), int(day)))
-    print(age)
-    con = sqlite3.connect("data.db")
+    #it can be activatad in case the button Yes, sure is clicked
+    conn_sql = sqlite3.connect("data.db")
     tabel_creat_query= '''CREATE TABLE IF NOT EXISTS Form_data(firstname TEXT, lastname TEXT, 
     birthday INT, country TEXT, language TEXT, gender TEXT)'''
-    con.execute(tabel_creat_query)
+    conn_sql.execute(tabel_creat_query)
     #insert data into the query
     data_insert_into_query= '''INSERT INTO Form_data(firstname, lastname, birthday, country, 
     language, gender) VALUES(?, ?, ? ,? ,?, ?)'''
     data_insertion_tuple= (firstname, lastname, age, var_con, language_vars, gender)
-    cursor= con.cursor()
+    cursor= conn_sql.cursor()
     cursor.execute(data_insert_into_query, data_insertion_tuple)
-    con.commit()
-    con.close()
+    conn_sql.commit()
+    conn_sql.close()
 
 #variables
 firstname= StringVar()
 lastname= StringVar()
 birthday= StringVar()
-var= StringVar(win)
+var_coun= StringVar(win)
 var_c1 = "C"
 var_c2= "SQL"
 var_c3= "Other"
-radio_var= StringVar()
+radio_var_gender= StringVar()
 
 label_heading = Label(win, text="REGISTRATION FORM", font="Currier", relief=SOLID).place(x=75, y=15)
 
@@ -151,8 +155,8 @@ countries = ('Abkhazia', 'Afghanistan', 'Akrotiri and Dhekelia', 'Albania', 'Alg
              'Vietnam', 'Wales', 'Wallis and Futuna', 'Western Sahara', 'Yemen', 'Zambia', 'Zimbabwe')
 
 label_country = Label(win, text="country:").place(x=50, y =140)
-var.set("Select Country")
-option_country = ttk.Combobox(win, value=countries, textvariable=var)
+var_coun.set("Select Country")
+option_country = ttk.Combobox(win, value=countries, textvariable=var_coun)
 option_country.current(0)
 option_country.place(x=150, y=140, width=135)
 
@@ -167,8 +171,8 @@ c3.place(x=250, y=180)
 
 
 gender = Label(win, text="Gender").place(x=50, y=220)
-r1 = Radiobutton(win, text="Male", variable=radio_var, value="Male").place(x=150, y=220)
-r2= Radiobutton(win, text="Female", variable=radio_var, value="Female").place(x=210, y=220)
+r1 = Radiobutton(win, text="Male", variable=radio_var_gender, value="Male").place(x=150, y=220)
+r2= Radiobutton(win, text="Female", variable=radio_var_gender, value="Female").place(x=210, y=220)
 
 button_submit=Button(win, text="Submit", background="green", command=database).place(x=80, y=260)
 button_quit= Button(win, text="Quit", background="red", command=win.destroy).place(x=200, y=260)

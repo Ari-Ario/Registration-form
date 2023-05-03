@@ -70,19 +70,19 @@ def success_entry_win():
     butt_no_quit= Button(success_frame, text="No, Quit", command=success_win.destroy , bg="red")
     butt_no_quit.pack(side=RIGHT)
 
-#extra method to collect the date in 
+#extra method to collect the date in, install sqlitebrowser from: https://sqlitebrowser.org/dl/
 def sql_data_insertion():
     global first, second, dob, var_con, language_vars, var4
     today = date.today()
     day, month, year= dob.split(".")
     age = today.year - int(year) - ((today.month, today.day) < (int(month), int(day)))
     #it can be activatad in case the button Yes, sure is clicked
-    conn_sql = sqlite3.connect("data.db")
-    tabel_creat_query= '''CREATE TABLE IF NOT EXISTS Form_data(firstname TEXT, lastname TEXT, 
-    birthday INT, country TEXT, language TEXT, gender TEXT)'''
-    conn_sql.execute(tabel_creat_query)
+    conn_sql = sqlite3.connect('data.db')
+    tabel_create_query= '''CREATE TABLE IF NOT EXISTS Form_data(firstname TEXT, lastname TEXT, 
+    age INT, country TEXT, language TEXT, gender TEXT)'''
+    conn_sql.execute(tabel_create_query)
     #insert data into the query
-    data_insert_into_query= '''INSERT INTO Form_data(firstname, lastname, birthday, country, 
+    data_insert_into_query= '''INSERT INTO Form_data(firstname, lastname, age, country, 
     language, gender) VALUES(?, ?, ? ,? ,?, ?)'''
     data_insertion_tuple= (firstname, lastname, age, var_con, language_vars, gender)
     cursor= conn_sql.cursor()
